@@ -1,0 +1,158 @@
+﻿<!DOCTYPE>
+<html>
+<head>
+<!-- Custom stlylesheet -->
+
+<link href="chatformcss.css" type="text/css" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="../css/style.css"/>
+
+
+<style>
+	
+</style>
+
+</head>
+<body>
+<div class="container">
+        <div class="mesgs">
+           <div class="headind_srch">
+	<input type=button class="primary-btn order-submit" style='float:right;' value="Back" Onclick="backTochat();">
+            <div class="recent_heading">
+              <h4 id='chat_title'></h4>
+            </div>
+          </div>
+          <div class="msg_history" id='msg_content'>
+            
+          </div>
+            <div class="type_msg">
+              <div class="input_msg_write">
+                <input type="text" id='input_text' onkeyup="enterkey();" class="write_msg" placeholder="Type a message" />
+                <a href=#  onclick='enterbutton();'><button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button></a>
+              </div>
+            </div>
+        </div>
+
+</div>
+</body>
+<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+<script>
+
+	  var firebaseConfig = {
+	    apiKey: "AIzaSyA7jmSkNpk47WEGpAJVXuWRy2tfcf3-ieQ",
+	    authDomain: "se-proj-db.firebaseapp.com",
+	    databaseURL: "https://se-proj-db.firebaseio.com",
+	    projectId: "se-proj-db",
+	    storageBucket: "se-proj-db.appspot.com",
+	    messagingSenderId: "239952264168",
+	    appId: "1:239952264168:web:29facf8a846fb0d39e425d",
+	    measurementId: "G-2ZQXSQXSLX"
+	  };
+	  firebase.initializeApp(firebaseConfig);
+	  var database = firebase.database();
+
+	var income_prev_content = '<div class="incoming_msg">  <div class="received_msg"> <div class="received_withd_msg"><p>';
+	var income_mid_content = '</p> <span class="time_date">';
+	var income_next_content = '</span></div> </div> </div>';
+	var outgoing_prev_content = '<div class="outgoing_msg"> <div class="sent_msg"> <p>';
+	var outgoing_mid_content = '</p> <span class="time_date">';
+	var outgoing_next_content = '</span> </div> </div>';
+	var chat_opponent;
+	var cur_user = 'user2';
+	var chat_content_num;
+	var chat_title;
+
+	var messenger_cont = document.getElementById('msg_content');
+
+	function enterkey() {
+ 	       if (window.event.keyCode == 13) {
+		var text = document.getElementById('input_text');
+		update_chat(text.value);
+		text.value='';
+	        }
+	}
+	function enterbutton() {
+		var text = document.getElementById('input_text');
+		update_chat(text.value);
+		text.value='';
+	}
+	
+	function backTochat(){
+		location.href = 'chatlist.html';
+	}
+
+	function init_chatform(){
+			chat_opponent = location.href.split('?')[1];
+			var title = document.getElementById('chat_title');
+			title.innerHTML = 'Chatting' + ' - ' + chat_opponent;
+	}
+	init_chatform();
+
+	function cal_date(){
+		var d = new Date();
+		var str = '';
+		str = d.getHours() + ':' + d.getMinutes() + '  |  ' + (d.getMonth()+1) + '/' + d.getDate();
+		return str;
+	}
+
+	function fill_chat(chat_data){
+		messenger_cont.innerHTML = '';
+		chat_content_num = Object.keys(chat_data).length-1;
+		for(var i=0; i<chat_content_num; i++){
+			username = chat_data[i]['username'];
+			content = chat_data[i]['content'];
+			time = chat_data[i]['time'];
+
+			if(username == cur_user){
+				text = outgoing_prev_content + content + outgoing_mid_content + time + outgoing_next_content;
+				messenger_cont.innerHTML = messenger_cont.innerHTML + text;
+			}
+			else{
+				text = income_prev_content + content + income_mid_content + time + income_next_content;
+				messenger_cont.innerHTML = messenger_cont.innerHTML + text;
+			}
+			if(i == chat_content_num-1){
+				update_time(time);
+			}
+		}
+	}
+
+	var chat_ref = database.ref('Messenger');
+	chat_ref.on('value',function(data){
+		chatname1 = cur_user + ':' + chat_opponent;
+		chatname2 = chat_opponent + ':' + cur_user;
+		if(Object.keys(data.val()).includes(chatname1) == true){
+			chat_title = chatname1;
+			chat_data = data.val()[chatname1];
+			fill_chat(chat_data);
+		}
+		else{
+			chat_title = chatname2;
+			chat_data = data.val()[chatname2];
+			fill_chat(chat_data);
+		}
+	});
+
+
+	function update_chat(chat_content){
+		database.ref('Messenger'+'/'+chat_title+'/'+chat_content_num).set({
+			username : cur_user,
+			content : chat_content,
+			time : cal_date()
+		});
+	}
+	function update_time(time){
+		var time1 = time.split('|')[0];
+		var time2 = time.split('|')[1];
+		var hour = time1.split(':')[0];
+		var min = time1.split(':')[1].replace('  ','');
+		var month = time2.split('/')[0].replace('  ','');
+		var day = time2.split('/')[1];
+		var updates={};
+		updates['Messenger/'+chat_title+'/recent'] = (month[1] ? month : '0'+month[0]) + (day[1] ? day : '0'+day[0]) + (hour[1] ? hour : '0'+ hour[0]) + (min[1] ? min : '0'+ min[0]);
+		database.ref().update(updates);
+	}
+
+
+</script>
+</html>
