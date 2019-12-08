@@ -48,23 +48,27 @@ upload_form.addEventListener('submit', function (evnt, callback) {
         alert("No Price!");
     else if(fileList[0]==undefined)
         alert("No Image!");
-    //else if(video==undefined)
-        //alert("No Video!");
     else if(input_content.value=="")
         alert("No Content!");
     else {
+        let wait_div = document.getElementById("wait-upload");
+        wait_div.innerHTML = "<p>uploading, please wait..."
         for (var i = 0; i < fileList.length; i++) {
+            console.log(fileList.length);
             storageRef.child('image/' + fileList[i].name).put(fileList[i]).then(function (snapshot) {
                 snapshot.ref.getDownloadURL().then(function (url) {
                     // console.log('Uploaded a blob or file!',img_urlList);
                     img_urlList.push(url);
                     console.log(img_urlList);
                     //   console.log( img_urlList.length );
+
                     if (img_urlList.length == i) {
                         if (video == undefined) {
                             console.log('undefined!');
-                            evnt.waitUntil(firebase.database().ref('/Product').push(formData));
-                            window.location.href = '/product/';
+                            firebase.database().ref('/Product').push(formData);
+                            setTimeout(function () {
+                                window.location.href = '/product/';
+                            }, 5000);
                         } else {
                             console.log('there is video!');
                             storageRef.child('video/' + video.name).put(video).then(function (snapshot2) {
@@ -74,6 +78,9 @@ upload_form.addEventListener('submit', function (evnt, callback) {
                                     formData["video"] = url2;
                                     //   console.log('videosubmit3', formData);
                                     firebase.database().ref('/Product').push(formData);
+                                    setTimeout(function () {
+                                window.location.href = '/product/';
+                            }, 5000);
                                 });
                             });
                         }
@@ -94,8 +101,15 @@ upload_form.addEventListener('submit', function (evnt, callback) {
   //    console.log('Uploaded a blob or file!',this.fileList[0]);
   	for (var i = 0; i < fileInput.files.length; i++) {
     	fileList.push(fileInput.files[i]);
-
     }
+  });
+
+  	videoInput.addEventListener('change', function (evnt) {
+	//	console.log('videoupload');
+			video=this.files[0];
+	//		console.log('hi',video.name);
+  //  fileList=this.fileList;
+
   });
 
 /*  renderFileList = function () {
