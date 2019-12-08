@@ -1,0 +1,124 @@
+﻿{% load static %}
+<html>
+<head>
+
+<link href="{% static "css/chatformcss.css" %}" type="text/css" rel="stylesheet">
+
+</head>
+<body>
+<div class="container">
+<div class="mesgs">
+          <div class="headind_srch">
+            <div class="recent_heading">
+              <h4>Chatting List</h4>
+            </div>
+          </div>
+          <div class="inbox_chat" id='chat'>
+            
+          </div>
+</div></div>
+<button id="makechat"><a href=# onclick='makeChat();'>make chat</a></button>
+    	
+</body>
+
+<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+<script>
+
+	  var firebaseConfig = {
+	    apiKey: "AIzaSyA7jmSkNpk47WEGpAJVXuWRy2tfcf3-ieQ",
+	    authDomain: "se-proj-db.firebaseapp.com",
+	    databaseURL: "https://se-proj-db.firebaseio.com",
+	    projectId: "se-proj-db",
+	    storageBucket: "se-proj-db.appspot.com",
+	    messagingSenderId: "239952264168",
+	    appId: "1:239952264168:web:29facf8a846fb0d39e425d",
+	    measurementId: "G-2ZQXSQXSLX"
+	  };
+	  firebase.initializeApp(firebaseConfig);
+	  var database = firebase.database();
+
+	var cur_user = '{{ username }}';
+	var chat_list_person = new Array();
+	var recent_time = new Array();
+	var chat_list = new Array();
+	var prev_list = '<div class="chat_list" onclick="gotoChatform(this.innerHTML);"><div class="chat_people"><div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div> <div class="chat_ib"><h5>';
+	var next_list = '</h5></div></div></div>';
+	var re_prev_list = '<div class="chat_people"><div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div> <div class="chat_ib"><h5>';
+	var re_next_list = '</h5></div></div>';
+
+	function gotoChatform(a){
+		var b = a.replace(re_prev_list, '');
+		b = b.replace(re_next_list, '');
+		b = b.split('<span class="chat_date">')[0];
+		console.log(b);
+		location.href = '/message/form/?'+b;
+	}
+	function makeChat(){
+		var chat_title = cur_user + ':' + 'tempuser';
+		var vDate = new Date();
+		var MM = (vDate.getMonth() + 1).toString();
+		var dd = vDate.getDate().toString();
+		var HH = vDate.getHours().toString();
+		var mm = vDate.getMinutes().toString();
+		var time = (MM[1] ? MM : '0'+MM[0]) + (dd[1] ? dd : '0'+dd[0]) + (HH[1] ? HH : '0'+ HH[0]) + (mm[1] ? mm : '0'+ mm[0]);
+
+		database.ref('Messenger'+'/'+chat_title+'/').set({
+			'recent' : time
+		});
+		location.href='chatform.html?'+'tempuser';
+	}
+
+	function fill_content(){
+		content_total='';
+		for(var i=chat_list_person.length-1; i>=0; i--){
+			tok = prev_list + chat_list_person[i] + '<span class="chat_date">' +  recent_time[i] +'</span>' + next_list;
+			content_total = content_total+tok;
+		}
+		content_total = '<a href=# >' + content_total + '</a>';
+		var chat_list = document.getElementById('chat');
+		chat_list.innerHTML = content_total;
+	}
+
+	function identify_list(){
+		var ind = 0;
+		var sec_ind = 0;
+		var key_ind = 0;
+		var sorted_list = database.ref('Messenger');
+		var loop_num;
+		sorted_list.on('value',function(snap){
+
+		loop_num=Object.keys(snap.val()).length;
+		sorted_list.orderByChild("recent").on("child_added", function(data){
+			var key_list = data.ref.key;
+			var title_data = key_list.split(':');
+			var user1 = title_data[0];
+			var user2 = title_data[1];
+			if(cur_user == user1 || cur_user == user2){
+				if(cur_user == user1){
+					chat_list_person[ind] = user2;
+				}
+				else{
+					chat_list_person[ind] = user1;
+				}
+				chat_list[ind] = new Array();
+				
+				for(var i=0; i<Object.keys(data.val()).length-1; i++){
+					chat_list[ind][i] = data.val()[i];
+				}
+				var recent = data.val()['recent'];
+				recent_time[ind] = recent.substring(0,2) + '/' + recent.substring(2,4);			
+				
+				ind = ind+1;
+			}
+			key_ind = key_ind+1;
+			if(key_ind == loop_num){
+				fill_content();
+			}
+		});
+		});
+	}
+	identify_list();
+</script>
+
+</html>
