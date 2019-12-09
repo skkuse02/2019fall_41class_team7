@@ -2,22 +2,13 @@
 <!DOCTYPE>
 <html>
 <head>
-<!-- Custom stlylesheet -->
 
 <link href="{% static "css/chatformcss.css" %}" type="text/css" rel="stylesheet">
-<link type="text/css" rel="stylesheet" href="{% static "css/style.css" %}"/>
-
-
-<style>
-	
-</style>
-
 </head>
 <body>
 <div class="container">
         <div class="mesgs">
            <div class="headind_srch">
-	<input type=button class="primary-btn order-submit" style='float:right;' value="Back" Onclick="backTochat();">
             <div class="recent_heading">
               <h4 id='chat_title'></h4>
             </div>
@@ -38,7 +29,6 @@
 <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
 <script>
-
 	  var firebaseConfig = {
 	    apiKey: "AIzaSyA7jmSkNpk47WEGpAJVXuWRy2tfcf3-ieQ",
 	    authDomain: "se-proj-db.firebaseapp.com",
@@ -76,10 +66,6 @@
 		var text = document.getElementById('input_text');
 		update_chat(text.value);
 		text.value='';
-	}
-	
-	function backTochat(){
-		location.href = '/message/list/';
 	}
 
 	function init_chatform(){

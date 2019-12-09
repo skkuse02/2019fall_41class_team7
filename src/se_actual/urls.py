@@ -22,6 +22,6 @@ urlpatterns = [
     path('', views.main_page),
     path('user/', include('Users.urls')),
     path('message/', include('Messenger.urls')),
-    path('product/', views.product_list),
+    path('product/', include('Product.urls')),
     path('upload/', views.test_upload),
 ]
