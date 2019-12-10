@@ -1,0 +1,113 @@
+﻿{% load static %}
+<!DOCTYPE>
+<html>
+<head>
+	<meta charset="utf-8">
+ 		<!-- Custom stlylesheet -->
+ 		<link type="text/css" rel="stylesheet" href="{% static "css/style.css" %}"/>
+
+<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+	<script>
+
+	   var firebaseConfig = {
+	    apiKey: "AIzaSyA7jmSkNpk47WEGpAJVXuWRy2tfcf3-ieQ",
+	    authDomain: "se-proj-db.firebaseapp.com",
+	    databaseURL: "https://se-proj-db.firebaseio.com",
+	    projectId: "se-proj-db",
+	    storageBucket: "se-proj-db.appspot.com",
+	    messagingSenderId: "239952264168",
+	    appId:	"1:239952264168:web:29facf8a846fb0d39e425d",
+	    measurementId: "G-2ZQXSQXSLX"
+	  };
+
+	  firebase.initializeApp(firebaseConfig);
+	  var database = firebase.database();
+
+		var index, title, writer, memo, db_index;	
+		function init_boardView(){
+			temp = location.href.split('?');
+			data = temp[1].split(':');
+			boardname = data[0];
+			index = data[1];
+			console.log(data);
+		}
+		init_boardView();
+
+		
+		db_index=0;
+		function set_info(){
+			var dbref = database.ref().child(boardname+'/'+index);
+			dbref.once('value').then( function(data){
+				insertTD(data.val()['a'], data.val()['b'], data.val()['d'], data.val()['e']);
+
+			});
+		}
+		set_info();	
+
+		function gotopic(file){
+			console.log('File' + file);
+			location.href = file;
+		}
+
+		function insertTD(title, writer, memo, file){
+			var titleTR = document.getElementById('titleTR');
+			titleTR.innerHTML ='<td> Title: ' + title + '</td>';
+			var writerTR = document.getElementById('writerTR');
+			writerTR.innerHTML ='<td> Writer: ' + writer + '</td>';
+			var memoTR = document.getElementById('memoTR');
+			memoTR.innerHTML ='<td> Content: ' + memo + '</td>';
+			var fileTR = document.getElementById('fileTR');
+			if(file == ''){
+				fileTR.innerHTML ='<td> File: ' + file  + '</td>';
+			}
+			else{
+				fileTR.innerHTML ='<td> File: <a href='+file+' target="blank">file link</a>' + '<img src=' + file + '>' + '</td>';
+			}
+		}
+
+		function gotoBoard(){
+		    if(boardname=='NoticeBoard'){
+		        location.href='/board/notice/';
+            }
+            else if(boardname=='FraudBoard'){
+		        location.href='/board/fraud/';
+            }
+            else{
+                location.href='/board/free/';
+            }
+		}
+		
+	</script>
+	<style>
+		#memoTR{height:100px;}
+	</style>
+</head>
+<body>
+   <p>&nbsp;&nbsp;</p>
+   <table>
+     <caption style='text-align:left; font-weight:bold; font-size:18px; margin-bottom:15px; margin-top:0px; width:700px;'> Post Content </caption>
+     <tr id="titleTR">
+     </tr>
+     <tr height="1" bgcolor="#dddddd"><td colspan="4"></td></tr>
+     <tr height="5"><td colspan="4"></td></tr>
+     <tr id='writerTR'>
+     </tr>
+     <tr height="1" bgcolor="#dddddd"><td colspan="4"></td></tr>
+     <tr height="5"><td colspan="4"></td></tr>
+     <tr id='memoTR'>
+     </tr>
+     <tr height="1" bgcolor="#dddddd"><td colspan="4"></td></tr>
+     <tr height="5"><td colspan="4"></td></tr>
+     <td><div id='fileTR' style='overflow:scroll; width:700px; height:200px;'>
+     </div></td>
+     <tr height="1" bgcolor="#dddddd"><td colspan="4"></td></tr>
+     <tr height="1" bgcolor="#dddddd"><td colspan="4"></td></tr>
+     <tr height="10"><td colspan="4"></td></tr>
+     <tr align="center">
+      <td colspan="2"><input type=button class="primary-btn order-submit" value="Board List" Onclick="gotoBoard();"></td>
+     </tr>
+    </table>
+</body>
+
+</html>

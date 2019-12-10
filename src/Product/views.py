@@ -22,3 +22,14 @@ def product_info(request):
         return render(request, "Product/product_info.html", {'login': username})
     except:
         return render(request, 'Product/product_info.html')
+
+
+def product_search(request):
+    try:
+        username = request.session['uname']
+        context = {
+            'username': username,
+        }
+        return render(request, "Product/product_search.html", {'login': username})
+    except:
+        return render(request, 'Product/product_search.html')

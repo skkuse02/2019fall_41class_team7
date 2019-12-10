@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '=w)sm+ztvz4u9*56+s(rb_oo4q^3tetqv&!+rwg5qh-kj_djs*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['35.238.168.85']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Users',
     'Messenger',
     'Product',
+    'Board',
 ]
 
 MIDDLEWARE = [
@@ -61,7 +62,8 @@ ROOT_URLCONF = 'se_actual.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,4 +138,6 @@ SITE_ID = 1
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
+SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_TIMEOUT = 60 * 10
+

@@ -466,49 +466,91 @@
 			measurementId: "G-2ZQXSQXSLX"
 		};
 
-
 		firebase.initializeApp(firebaseConfig);
 
 		var database = firebase.database();
 		var product_num = 0;
 		var product;
 		var title;
+		var tempvar = location.href.split('c=')[1];
+		var categoryname = tempvar.split('&z=')[0];
+		var itemname = tempvar.split('&z=')[1];
+		console.log(categoryname);
+		console.log(itemname);
+
+		switch(categoryname){
+            case '0':
+                var category = 'All';
+                break;
+            case '1':
+                var category = '패션/의류/잡화';
+                break;
+            case '2':
+                var category = '식품';
+                break;
+            case '3':
+                var category = '주방용품';
+                break;
+            case '4':
+                var category = '생활용품';
+                break;
+            case '5':
+                var category = '가전제품';
+                break;
+            case '6':
+                var category = '기타';
+                break;
+            default:
+                console.log('error');
+                var category = 'All';
+        }
 
 		function gotoView(index) {
 			index = index.replace('<br><br>', '');
-			console.log(index);
+			//console.log(index);
 			location.href = '/product/info/?' + ':' + index;
 		}
 
 		function showImage(length) {
 			var last = length - 1;
-			console.log(product.length);
-			console.log(product[0].category);
-			var product_info = ''
+			// console.log(product.length);
+			// console.log(product[0].category);
+			var product_info = '';
 			for (var i = 0; i < length; i++) {
-				console.log(i)
-				console.log(product[i].image)
-				product_info += '<div class="col-md-4 col-xs-6">'
-				product_info += '<div class="product">'
-				product_info += '<div class="product-img">'
-				if (typeof product[i].image == 'undefined') {
-					product_info += '<img src="{% static "img/product01.png" %}" onclick="gotoView(\'' + title[i] + '\');" alt=""></div>'
-				}
-				else {
-					product_info += '<img src="' + product[i].image[Object.keys(product[i].image)[0]] + '" onclick="gotoView(\'' + title[i] + '\');" alt=""></div>'
-				}
-				product_info += '<div class="product-body"><p class="product-category">' + product[i].category + '</p>'
-				product_info += '<h3 class="product-name"><a href=# onclick="gotoView(\'' + title[i] + '\');">' + product[i].title + '</a></h3>'
-				product_info += '<h4 class="product-price">' + product[i].price + '</h4>'
-				product_info += '<div class="product-btns">'
-				product_info += '<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button></div></div>'
-				product_info += '</div></div>'
-				console.log(i, product_info);
+				// console.log(i)
+				console.log(product[i].title);
+				if(!product[i].title.includes(itemname)){
+				    console.log('case1');
+				    continue;
+                }
+				else if(!(category == 'All') && !product[i].category.includes(category)){
+				    console.log('case2 '+category);
+				    continue;
+                }
+				else{
+                    product_info += '<div class="col-md-4 col-xs-6">'
+                    product_info += '<div class="product">'
+                    product_info += '<div class="product-img">'
+                    if (typeof product[i].image == 'undefined') {
+                        product_info += '<img src="{% static "img/product01.png" %}" onclick="gotoView(\'' + title[i] + '\');" alt=""></div>'
+                    }
+                    else {
+                        product_info += '<img src="' + product[i].image[Object.keys(product[i].image)[0]] + '" onclick="gotoView(\'' + title[i] + '\');" alt=""></div>'
+                    }
+                    product_info += '<div class="product-body"><p class="product-category">' + product[i].category + '</p>'
+                    product_info += '<h3 class="product-name"><a href=# onclick="gotoView(\'' + title[i] + '\');">' + product[i].title + '</a></h3>'
+                    product_info += '<h4 class="product-price">' + product[i].price + '</h4>'
+                    product_info += '<div class="product-btns">'
+                    product_info += '<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button></div></div>'
+                    product_info += '</div></div>'
+                    // console.log(i, product_info);
+                }
 			}
 			product_list.innerHTML += product_info;
 		}
 
 		function Product() {
+		    search = location.href.split('?');
 			product = new Array();
 			title = new Array();
 			var ind = 0;
@@ -516,7 +558,7 @@
 			var productinfo = database.ref().child('Product/');
 
 			productinfo.once('value').then(function (data) {
-				console.log(Object.keys(data.val()).length);
+				// console.log(Object.keys(data.val()).length);
 				title = Object.keys(data.val());
 				product_num = Object.keys(data.val()).length;
 				data.forEach(function (childData) {

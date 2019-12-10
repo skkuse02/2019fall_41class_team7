@@ -24,4 +24,5 @@ urlpatterns = [
     path('message/', include('Messenger.urls')),
     path('product/', include('Product.urls')),
     path('upload/', views.test_upload),
+    path('board/', include('Board.urls')),
 ]
