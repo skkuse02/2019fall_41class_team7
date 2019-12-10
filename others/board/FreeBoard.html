@@ -1,0 +1,169 @@
+﻿<!DOCTYPE>
+<html>
+	<head>
+		<meta charset="utf-8">
+ 			<!-- Custom stlylesheet -->
+ 			<link type="text/css" rel="stylesheet" href="../css/style.css"/>
+
+<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+<script>
+
+   var firebaseConfig = {
+    apiKey: "AIzaSyA7jmSkNpk47WEGpAJVXuWRy2tfcf3-ieQ",
+    authDomain: "se-proj-db.firebaseapp.com",
+    databaseURL: "https://se-proj-db.firebaseio.com",
+    projectId: "se-proj-db",
+    storageBucket: "se-proj-db.appspot.com",
+    messagingSenderId: "239952264168",
+    appId: "1:239952264168:web:29facf8a846fb0d39e425d",
+    measurementId: "G-2ZQXSQXSLX"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+
+  var board;
+
+ function gotoView(title){
+	var index = title.parentElement.parentElement.rowIndex;
+	index = board.length - index+1;
+	console.log(index);
+	location.href = 'boardView.html?'+'FreeBoard'+':'+index;
+ }
+
+function init_board(){
+		temp = location.href.split('?');
+		if(temp.length>1){
+			data = temp[1].split(':');
+			console.log(data.length);
+			console.log(data);
+		}
+		
+}
+
+ function listing(num_write, num_page){
+	var s_index = board.length-1-10*(num_page-1);
+	var e_index = s_index - 9;
+	if( e_index <0 ){
+		e_index = 0;
+	} 
+	var tr='';
+	var tr_total='';
+	console.log("listing: "+board);
+	for(var i=s_index; i>=e_index; i--){
+		tr='<tr>';
+		tr = tr + '<td>' + (i+1) + '</td>';
+		tr = tr + '<td> <a href=# onclick="gotoView(this);">' + board[i][0] + '</a></td>';
+		for(var j=1; j<3; j++){
+			tr = tr  + '<td>' + board[i][j] + '</td>';
+		}
+		tr_total = tr_total+tr+'</tr>';
+	}
+	tbody.innerHTML = tr_total;
+	paging(num_write, num_page);
+
+ }
+
+ function paging(num_write, page){
+	var listcount = 10;
+	var totalpage = num_write/listcount + 1;
+	if( num_write % listcount == 0){
+		totalpage = totalpage - 1;
+	}
+	if(page > totalpage){
+		page = totalpage;
+	}
+
+	var pagecount = 10;
+	var start = parseInt((page-1)/pagecount)*pagecount + 1;
+	var end = start + pagecount -1;
+	if(end > totalpage){
+		end = totalpage;
+	}
+	var prev = start - 1;
+	var next = end + 1;
+
+	var html = "";
+        
+	if(prev > 0)
+		html += "<a href=# id='prev'><</a> ";
+	for(var i=start; i <= end; i++){
+		html += "<a href='#' id=" + i + " onclick='listing(num_write, this.innerHTML);'>" + i + "</a> ";
+	}
+	if(end < totalpage)
+		html += "<a href=# id='next'>></a>";
+
+	var foot = document.getElementById('tfoot');
+	foot.innerHTML = '<td colspan="4" align="center"><br>' + html + '</td>';
+	var curpage = document.getElementById(page);
+	curpage.style.color = 'red';
+
+ }
+
+  function fillTd(){
+	board=new Array();
+	var ind = 0;
+	var sec_ind = 0;
+	var dbref = database.ref().child('FreeBoard/');
+	dbref.once('value').then( function(data){
+		console.log(Object.keys(data.val()).length);
+		num_write = Object.keys(data.val()).length;
+		data.forEach(function(childData){
+			sec_ind = 0;
+			board[ind] = new Array();
+			childData.forEach(function(sec_child){
+				console.log(sec_child.val());
+				board[ind][sec_ind] = sec_child.val();
+				sec_ind = sec_ind + 1;
+			});
+			ind = ind+1;
+		});
+		listing(num_write, 1);
+	});	
+  }
+
+  function gotoWrite(){
+	location.href = 'write.html?'+'FreeBoard'+':'+(board.length+1);
+
+  }
+ 
+  fillTd();
+
+</script>
+		<style>
+			table.table1{text-align:center; border-collapse: collapse;}
+			table.table1 thead th{border-top:1px solid #79ad0d; border-bottom:2px solid #79ad0d; font-size:14px; color:black; height:35px;}
+			table.table1 tbody td{font-size:12px; color:#888; text-align:center; height:30px; border-bottom:1px solid gray;}
+			a{text-decoration:none;}
+			#write{position:relative; top:0px; left:540px; border:none; background-color:rgba(0,0,0,0);}
+		</style>
+	</head>
+
+	<body>
+		<button id="write"><a href=# class="primary-btn order-submit" onclick='gotoWrite();'>Writing</a></button>
+		<table class = "table1">
+			<caption style='text-align:left; font-weight:bold; font-size:18px; margin-bottom:15px;'> Free board </caption>
+			<colgroup>
+				<col width="38px">
+				<col width="500px">
+				<col width="80px">
+				<col width="80px">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Number</th>
+					<th>Title</th>
+					<th>Writer</th>
+					<th>Date</th>
+				</tr>
+			</thead>
+			<tbody id="tbody">
+				
+			</tbody>
+			<tfoot id = 'tfoot'>
+			</tfoot>
+		</table> 
+	</body>
+
+</html>
