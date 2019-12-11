@@ -132,7 +132,7 @@
 					<div class="col-md-12">
 						<ul class="breadcrumb-tree">
 							<li><a href="#">Home</a></li>
-							<li><a href="#">Product list</a></li>
+							<li><a href="#" onclick="Product()">Product list</a></li>
 						</ul>
 					</div>
 				</div>
@@ -232,12 +232,8 @@
 
 						<!-- store bottom filter -->
 						<div class="store-filter clearfix">
-							<ul class="store-pagination">
-								<li class="active">1</li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
-								<li><a href="#">4</a></li>
-								<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+							<ul class="store-pagination" id = "page_num">
+
 							</ul>
 						</div>
 						<!-- /store bottom filter -->
@@ -397,6 +393,10 @@
 
 			var database = firebase.database();
 			var product_num = 0;
+			var product_cat_num = 0;
+			var product_reg_num = 0;
+			var glob_num_write = 0;
+			var glob_total_num = 0;
 			var product;
 			var title;
 
@@ -406,11 +406,16 @@
 				location.href = 'product.html?'+':'+ index;
 			}
 
-			function showImage(length){
+			function showImage(length, num_page, total_num){
 				product_list.innerHTML = '';
+				var s_index = total_num-1-12*(num_page-1);
+				var e_index = s_index - 11;
+				if( e_index <0 ){
+					e_index = 0;
+				}
 				var last = length - 1;
 				var product_info = ''
-				for(var i=last; i>=0; i--){
+				for(var i=s_index; i>=e_index; i--){
 					product_info += '<div class="col-md-4 col-xs-6">'
 					product_info += '<div class="product">'
 					product_info += '<div class="product-img">'
@@ -426,7 +431,49 @@
 					product_info += '</div></div></div>'
 				}
 				product_list.innerHTML += product_info;
+				console.log('num_page:' + num_page);
+				paging(length, num_page, total_num);
 			}
+
+			function paging(num_write, page, total_num){
+				 var listcount = 12;
+				 var totalpage = num_write/listcount + 1;
+				 if( num_write % listcount == 0){
+					 totalpage = totalpage - 1;
+				 }
+				 if(page > totalpage){
+					 page = totalpage;
+				 }
+				 glob_num_write = num_write
+				 glob_total_num = total_num
+
+				 console.log(page);
+				 var pagecount = 10;
+				 var start = parseInt((page-1)/pagecount)*pagecount + 1;
+				 var end = start + pagecount -1;
+				 if(end > totalpage){
+					 end = totalpage;
+				 }
+				 var prev = start - 1;
+				 var next = end + 1;
+
+				 var html = "";
+
+				 if(prev > 0)
+					 html += "<a href=# id='prev'><</a> ";
+				 for(var i=start; i <= end; i++){
+					 html += "<li><a href='#' id=" + i + " onclick='showImage(glob_num_write, this.innerHTML, glob_total_num);'>" + i + "</a></li>";
+				 }
+				 if(end < totalpage)
+					 html += "<a href=# id='next'>></a>";
+
+				 var foot = document.getElementById('page_num');
+				 foot.innerHTML = '<td colspan="4" align="center"><br>' + html + '</td>';
+				 var curpage = document.getElementById(page);
+				 console.log('start/end: '+start+end);
+				 //curpage.style.color = 'red';
+				}
+
 
 			function categoryFilter(name){
 				var productinfo = database.ref().child('Product/');
@@ -435,12 +482,13 @@
 
 				productinfo.orderByChild('category').equalTo(name).once('value', function(data){
 					console.log(data.val());
+					product_cat_num = Object.keys(data.val()).length;
 					data.forEach(function(childData){
 						product[ind] = childData.val();
 						ind = ind + 1;
 
 				});
-				showImage(ind);
+				showImage(ind, 1, product_cat_num);
 			});
 		}
 
@@ -451,11 +499,12 @@
 
 				productinfo.orderByChild('region').equalTo(name).once('value', function(data){
 					console.log(data.val());
+					product_reg_num = Object.keys(data.val()).length;
 					data.forEach(function(childData){
 						product[ind] = childData.val();
 						ind = ind + 1;
 					});
-				showImage(ind);
+				showImage(ind, 1, product_reg_num);
 				});
 			}
 
@@ -476,7 +525,7 @@
 					});
 					//console.log(product[6][2]);
 					var img = 0;
-					showImage(ind);
+					showImage(ind, 1, product_num);
 					//console.log(product[6][2][Object.keys(product[6][2])[0]]);
 				});
 	  }
