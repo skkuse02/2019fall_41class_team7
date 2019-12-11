@@ -36,6 +36,7 @@ upload_form.addEventListener('submit', function (evnt, callback) {
       "content": input_content.value,
       "image":img_urlList,
       "user":user_name,
+      "status": '0',
     };
 
     if(input_title.value=="")
@@ -66,6 +67,7 @@ upload_form.addEventListener('submit', function (evnt, callback) {
                         if (video == undefined) {
                             console.log('undefined!');
                             firebase.database().ref('/Product').push(formData);
+                            firebase.database().ref('/users/'+userid).push(formData);
                             setTimeout(function () {
                                 window.location.href = '/product/';
                             }, 5000);
@@ -78,6 +80,7 @@ upload_form.addEventListener('submit', function (evnt, callback) {
                                     formData["video"] = url2;
                                     //   console.log('videosubmit3', formData);
                                     firebase.database().ref('/Product').push(formData);
+                                    firebase.database().ref('/users/'+userid).push(formData);
                                     setTimeout(function () {
                                 window.location.href = '/product/';
                             }, 5000);

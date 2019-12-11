@@ -116,7 +116,7 @@
 					<!--<li><a href="product_list.html">Product</a></li> -->
 					<li><a href="/product/">Product</a></li>
 					<li><a href="/board/">Board</a></li>
-					<li><a href="#">My page</a></li>
+					<li><a href="/user/mypage/">My page</a></li>
 					{% if login %}
 					<li><a href="/user/logout/">Logout</a></li>
 					{% else %}
@@ -164,7 +164,7 @@
 						<div class="section-title">
 							<h3 class="title">Upload Product</h3>
 						</div>
-						<form id='upload-form'>form
+						<form id='upload-form'>
 							<div class="form-group">
 								<input id='input-title' class="input" type="text" name="Title" placeholder="Title">
 							</div>
@@ -203,7 +203,7 @@
 							<br><br><br>
 							<div class="order-notes">
 								<label>글 내용</label>
-								<textarea id='input-content' class="input" placeholder="Contents"></textarea>
+								<textarea id='input-content' style="height:500px;" class="input" placeholder="Contents"></textarea>
 							</div>
 							<div class="buttons">
 								<button type="submit" onclick="location.href = '#'"

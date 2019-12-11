@@ -61,6 +61,7 @@ def post_signup(request):
         message = "Unable to create account. Try again."
         return render(request, "Users/signup.html", {"message": message})
     uid = user['localId']
+    name = name
     data = {"name": name, "email": email, "status": "1"}
     database.child("users").child(uid).child("details").set(data)
     return HttpResponseRedirect('/')
@@ -86,7 +87,8 @@ def mypage(request):
         username = request.session['uname']
         context = {
             'ID': email,
-            'name': username,
+            'username': username,
+            'login': 'yes',
         }
         return render(request, "mypage.html", context=context)
     except:

@@ -86,6 +86,17 @@ ul, ol {
   list-style: none
 }
 
+dd{
+  float: left;
+}
+
+dt{
+  float: left;
+  clear: left;
+  width: 100px;
+  padding-bottom: 30px;
+}
+
 /*----------------------------*\
 	Buttons
 \*----------------------------*/

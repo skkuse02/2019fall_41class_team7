@@ -25,7 +25,7 @@ SECRET_KEY = '=w)sm+ztvz4u9*56+s(rb_oo4q^3tetqv&!+rwg5qh-kj_djs*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['35.238.168.85', 'sshshop.ddns.net']
 
 
 # Application definition
@@ -127,6 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATIC_URL = '/static/'
 STATICFILES_FINDERS = {
     "django.contrib.staticfiles.finders.FileSystemFinder",
