@@ -290,8 +290,9 @@
 
 
 		function makeChat(){
-			var chat_title1 = 'Notice' + ':' + 'tempuser';	// user_name, product_username
-			var chat_title2 = 'tempuser' + ':' + 'Notice';
+			var product_user;
+			var chat_title1;
+			var chat_title2;
 			var vDate = new Date();
 			var MM = (vDate.getMonth() + 1).toString();
 			var dd = vDate.getDate().toString();
@@ -304,6 +305,11 @@
 
 			var loop_num = 0;
 			var update_num = 0;
+			database.ref('Product/'+product_code).once('value',function(data){
+				product_user = data.val()['user'];
+				chat_title1 = 'Notice' + ':' + 'tempuser';
+				chat_title2 = 'tempuser' + ':' + 'Notice';
+			});
 			database.ref('Messenger/').once('value', function(data){
 				if(Object.keys(data.val()).includes(chat_title1) == true){
 					console.log(1);
@@ -345,6 +351,9 @@
 				if( update_num == 0){
 					var updates={};
 					updates['Product/'+product_code+'/'+'status/'] = 1;
+					database.ref().update(updates);
+					updates = {};
+					updates['Product/'+product_code+'/'+'buyer/'] = cur_user;
 					database.ref().update(updates);
 					update_num = update_num + 1;
 				}
