@@ -156,51 +156,27 @@
 							<div class="checkbox-filter">
 
 								<div class="input-checkbox">
-									<input type="checkbox" id="category-1">
-									<label for="category-1">
-										<span></span>
-										패션/의류/잡화
-									</label>
+									<a href ="#" onclick=categoryFilter(this.innerHTML) style="margin-left: 30px;">패션/의류/잡화</a>
 								</div>
 
 								<div class="input-checkbox">
-									<input type="checkbox" id="category-2">
-									<label for="category-2">
-										<span></span>
-										식품
-									</label>
+									<a href ="#" onclick=categoryFilter(this.innerHTML) style="margin-left: 30px;">식품</a>
 								</div>
 
 								<div class="input-checkbox">
-									<input type="checkbox" id="category-3">
-									<label for="category-3">
-										<span></span>
-										주방용품
-									</label>
+									<a href ="#" onclick=categoryFilter(this.innerHTML) style="margin-left: 30px;">주방용품</a>
 								</div>
 
 								<div class="input-checkbox">
-									<input type="checkbox" id="category-4">
-									<label for="category-4">
-										<span></span>
-										생활용품
-									</label>
+									<a href ="#" onclick=categoryFilter(this.innerHTML) style="margin-left: 30px;">생활용품</a>
 								</div>
 
 								<div class="input-checkbox">
-									<input type="checkbox" id="category-5">
-									<label for="category-5">
-										<span></span>
-										가전제품
-									</label>
+									<a href ="#" onclick=categoryFilter(this.innerHTML) style="margin-left: 30px;">가전제품</a>
 								</div>
 
 								<div class="input-checkbox">
-									<input type="checkbox" id="category-6">
-									<label for="category-6">
-										<span></span>
-										기타
-									</label>
+									<a href ="#" onclick=categoryFilter(this.innerHTML) style="margin-left: 30px;">기타</a>
 								</div>
 							</div>
 						</div>
@@ -211,67 +187,31 @@
 							<h3 class="aside-title">지역</h3>
 							<div class="checkbox-filter">
 								<div class="input-checkbox">
-									<input type="checkbox" id="region-1">
-									<label for="brand-1">
-										<span></span>
-										서울
-									</label>
+									<a href ="#" onclick=regionFilter(this.innerHTML) style="margin-left: 30px;">서울</a>
 								</div>
 								<div class="input-checkbox">
-									<input type="checkbox" id="region-2">
-									<label for="brand-2">
-										<span></span>
-										인천/경기
-									</label>
+									<a href ="#" onclick=regionFilter(this.innerHTML) style="margin-left: 30px;">인천/경기</a>
 								</div>
 								<div class="input-checkbox">
-									<input type="checkbox" id="region-3">
-									<label for="brand-3">
-										<span></span>
-										강원
-									</label>
+									<a href ="#" onclick=regionFilter(this.innerHTML) style="margin-left: 30px;">강원</a>
 								</div>
 								<div class="input-checkbox">
-									<input type="checkbox" id="region-4">
-									<label for="brand-4">
-										<span></span>
-										대전/충남
-									</label>
+									<a href ="#" onclick=regionFilter(this.innerHTML) style="margin-left: 30px;">대전/충남</a>
 								</div>
 								<div class="input-checkbox">
-									<input type="checkbox" id="region-5">
-									<label for="brand-5">
-										<span></span>
-										충북
-									</label>
+									<a href ="#" onclick=regionFilter(this.innerHTML) style="margin-left: 30px;">충북</a>
 								</div>
 								<div class="input-checkbox">
-									<input type="checkbox" id="region-6">
-									<label for="brand-6">
-										<span></span>
-										광주/전남
-									</label>
+									<a href ="#" onclick=regionFilter(this.innerHTML) style="margin-left: 30px;">광주/전남</a>
 								</div>
 								<div class="input-checkbox">
-									<input type="checkbox" id="region-7">
-									<label for="brand-7">
-										<span></span>
-										전북
-									</label>
+									<a href ="#" onclick=regionFilter(this.innerHTML) style="margin-left: 30px;">전북</a>
 								</div>
 								<div class="input-checkbox">
-									<input type="checkbox" id="region-8">
-									<label for="brand-8">
-										<span></span>
-										부산/경남
-									</label>
+									<a href ="#" onclick=regionFilter(this.innerHTML) style="margin-left: 30px;">부산/경남</a>
 								</div>
 								<div class="input-checkbox">
-									<input type="checkbox" id="region-9">
-									<label for="brand-9">
-										<span></span>
-										대구/경북
-									</label>
+									<a href ="#" onclick=regionFilter(this.innerHTML) style="margin-left: 30px;">대구/경북</a>
 								</div>
 							</div>
 						</div>
@@ -460,20 +400,17 @@
 			var product;
 			var title;
 
+
 			function gotoView(index){
 				index = index.replace('<br><br>','');
-				console.log(index);
 				location.href = 'product.html?'+':'+ index;
 			}
 
 			function showImage(length){
+				product_list.innerHTML = '';
 				var last = length - 1;
-				console.log(product.length);
-				console.log(product[0].category);
 				var product_info = ''
-				for(var i=0; i<length; i++){
-					console.log(i)
-					console.log(product[i].image)
+				for(var i=last; i>=0; i--){
 					product_info += '<div class="col-md-4 col-xs-6">'
 					product_info += '<div class="product">'
 					product_info += '<div class="product-img">'
@@ -483,15 +420,43 @@
 					else{
 						product_info +=	'<img src="' + product[i].image[Object.keys(product[i].image)[0]] + '" onclick="gotoView(\''+ title[i] +'\');" alt=""></div>'
 					}
-					product_info +=	'<div class="product-body"><p class="product-category">' + product[i].category + '</p>'
+					product_info +=	'<div class="product-body"><p class="product-category">' + product[i].category + '</p><p class="product-category">' + product[i].region+ '</p>'
 					product_info += '<h3 class="product-name"><a href=# onclick="gotoView(\''+ title[i] +'\');">'+product[i].title+'</a></h3>'
 					product_info += '<h4 class="product-price">' + product[i].price + '</h4>'
-					product_info += '<div class="product-btns">'
-					product_info += '<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button></div></div>'
-					product_info += '</div></div>'
-					console.log(i, product_info);
+					product_info += '</div></div></div>'
 				}
 				product_list.innerHTML += product_info;
+			}
+
+			function categoryFilter(name){
+				var productinfo = database.ref().child('Product/');
+				product = new Array();
+				var ind = 0;
+
+				productinfo.orderByChild('category').equalTo(name).once('value', function(data){
+					console.log(data.val());
+					data.forEach(function(childData){
+						product[ind] = childData.val();
+						ind = ind + 1;
+
+				});
+				showImage(ind);
+			});
+		}
+
+			function regionFilter(name){
+				var productinfo = database.ref().child('Product/');
+				product = new Array();
+				var ind = 0;
+
+				productinfo.orderByChild('region').equalTo(name).once('value', function(data){
+					console.log(data.val());
+					data.forEach(function(childData){
+						product[ind] = childData.val();
+						ind = ind + 1;
+					});
+				showImage(ind);
+				});
 			}
 
 			function Product(){
