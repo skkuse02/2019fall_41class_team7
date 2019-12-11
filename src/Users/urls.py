@@ -9,4 +9,5 @@ urlpatterns = [
     path('signup/', views.sign_up, name='signup'),
     path('post_signup/', views.post_signup),
     path('validate/', views.validate),
+    path('mypage/', views.mypage),
 ]

@@ -29,7 +29,7 @@
  function gotoView(title){
 	var index = title.parentElement.parentElement.rowIndex;
 	index = board.length - index+1;
-	console.log(index);
+	// console.log(index);
 	location.href = '/board/view?'+'FreeBoard'+':'+index;
  }
 
@@ -37,8 +37,8 @@ function init_board(){
 		temp = location.href.split('?');
 		if(temp.length>1){
 			data = temp[1].split(':');
-			console.log(data.length);
-			console.log(data);
+			// console.log(data.length);
+			// console.log(data);
 		}
 		
 }
@@ -51,7 +51,7 @@ function init_board(){
 	} 
 	var tr='';
 	var tr_total='';
-	console.log("listing: "+board);
+	// console.log("listing: "+board);
 	for(var i=s_index; i>=e_index; i--){
 		tr='<tr>';
 		tr = tr + '<td>' + (i+1) + '</td>';
@@ -108,13 +108,13 @@ function init_board(){
 	var sec_ind = 0;
 	var dbref = database.ref().child('FreeBoard/');
 	dbref.once('value').then( function(data){
-		console.log(Object.keys(data.val()).length);
+		// console.log(Object.keys(data.val()).length);
 		num_write = Object.keys(data.val()).length;
 		data.forEach(function(childData){
 			sec_ind = 0;
 			board[ind] = new Array();
 			childData.forEach(function(sec_child){
-				console.log(sec_child.val());
+				// console.log(sec_child.val());
 				board[ind][sec_ind] = sec_child.val();
 				sec_ind = sec_ind + 1;
 			});

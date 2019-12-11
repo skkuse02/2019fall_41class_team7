@@ -33,8 +33,11 @@ def list_messenger(request):
     return render(request, 'Messenger/chatlist.html', context=content)
 
 def detail_messenger(request):
-    username = request.session['uname']
-    content = {
-        'username': username,
-    }
-    return render(request, "Messenger/chatform.html", context=content)
+    try:
+        username = request.session['uname']
+        content = {
+            'username': username,
+        }
+        return render(request, "Messenger/chatform.html", context=content)
+    except:
+        render(request, 'Board/permission.html')

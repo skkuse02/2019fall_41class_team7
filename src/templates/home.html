@@ -116,7 +116,7 @@
 						<!--<li><a href="product_list.html">Product</a></li> -->
                         <li><a href="/product/">Product</a></li>
 						<li><a href="/board/">Board</a></li>
-						<li><a href="#">My page</a></li>
+						<li><a href="/user/mypage/">My page</a></li>
 						{% if login %}
                             <li><a href="/user/logout/">Logout</a></li>
                         {% else %}
@@ -141,6 +141,7 @@
 			<div class="container">
 				<!-- row -->
 				<div class="row">
+                    <h3>recent items</h3>
 					<div class="row" id = "product_list">
 						<!-- product -->
 
@@ -308,24 +309,29 @@
 
 			function gotoView(index){
 				index = index.replace('<br><br>','');
-				console.log(index);
+				// console.log(index);
 				location.href = '/product/info/?'+':'+ index;
 			}
 
 
 			function showImage(length){
 				var last = length - 1;
-				console.log(product.length);
-				console.log(product[0].category);
+				// console.log(product.length);
+				// console.log(product[0].category);
 				//console.log(product[last].image[Object.keys(product[last].image)[0]]);
 				// var s_index = product.length-1-10*(num_page-1);
 				// var e_index = s_index - 9;
 				// if( e_index <0 ){
 				// 	e_index = 0;
 				// }
+                var recent = last - 9;
+
+                if(recent < 0) {
+                    recent = -1;
+                }
                 var product_info = ''
-				for(var i=0; i<length; i++){
-				    console.log(i);
+				for(var i=last; i>recent; i--){
+				    // console.log(i);
                     product_info += '<div class="col-md-4 col-xs-6">';
 					product_info += '<div class="product">';
 					product_info += '<div class="product-img">';
@@ -335,13 +341,10 @@
 					else{
 						product_info +=	'<img src="' + product[i].image[Object.keys(product[i].image)[0]] + '" onclick="gotoView(\''+ title[i] +'\');" alt=""></div>'
 					}
-					product_info +=	'<div class="product-body"><p class="product-category">' + product[i].category + '</p>';
-					product_info += '<h3 class="product-name"><a href="#">' + product[i].title + '</a></h3>';
-					product_info += '<h4 class="product-price">' + product[i].price + '</h4>';
-					product_info += '<div class="product-btns">';
-					product_info += '<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button></div></div>'
-					product_info += '<div class="add-to-cart">';
-					product_info +=	'<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button></div></div></div>';
+					product_info +=	'<div class="product-body"><p class="product-category">' + product[i].category + '</p><p class="product-category">' + product[i].region+ '</p>'
+					product_info += '<h3 class="product-name"><a href=# onclick="gotoView(\''+ title[i] +'\');">'+product[i].title+'</a></h3>'
+					product_info += '<h4 class="product-price">' + product[i].price + '</h4>'
+					product_info += '</div></div></div>'
 				}
 				product_list.innerHTML += product_info;
 			}
@@ -354,7 +357,7 @@
 				var productinfo = database.ref().child('Product/');
 
 				productinfo.once('value').then(function(data){
-					console.log(Object.keys(data.val()).length);
+					// console.log(Object.keys(data.val()).length);
 					title = Object.keys(data.val());
 					product_num = Object.keys(data.val()).length;
 					data.forEach(function(childData){

@@ -19,7 +19,7 @@ def product_info(request):
         context = {
             'username': username,
         }
-        return render(request, "Product/product_info.html", {'login': username})
+        return render(request, "Product/product_info.html", {'login': username, 'username': username})
     except:
         return render(request, 'Product/product_info.html')
 

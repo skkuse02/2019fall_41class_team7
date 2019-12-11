@@ -36,7 +36,7 @@ def validate(request):
     uname = user['localId']
     uname = database.child("users").child(uname).child("details").get().val()
     uname = uname['name']
-    request.session['uid'] = session_id
+    request.session['uid'] = user['localId']
     request.session['uname'] = uname
     request.session['email'] = email
     return HttpResponseRedirect('/')
@@ -67,10 +67,27 @@ def post_signup(request):
 
 
 def account_info(request):
-    email = request.session['email']
-    username = request.session['uname']
-    context = {
-        'ID': email,
-        'name': username,
-    }
-    return render(request, "account.html", context=context)
+    try:
+        email = request.session['email']
+        username = request.session['uname']
+        context = {
+            'login': 'yes',
+            'ID': email,
+            'name': username,
+        }
+        return render(request, "account.html", context=context)
+    except:
+        HttpResponseRedirect("/user/login/")
+
+
+def mypage(request):
+    try:
+        email = request.session['email']
+        username = request.session['uname']
+        context = {
+            'ID': email,
+            'name': username,
+        }
+        return render(request, "mypage.html", context=context)
+    except:
+        return HttpResponseRedirect('/user/login/')

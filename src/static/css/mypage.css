@@ -86,30 +86,9 @@ ul, ol {
   list-style: none
 }
 
-dd{
-  float: left;
-}
-
-dt{
-  float: left;
-  clear: left;
-  width: 100px;
-  padding-bottom: 30px;
-}
-
 /*----------------------------*\
 	Buttons
 \*----------------------------*/
-.login-btn {
-  width: 250px;
-  margin: 0 auto;
-}
-
-.sign-btn{
-  width: 120px;
-  margin: 0 auto;
-}
-
 
 .primary-btn {
   display: inline-block;
@@ -135,13 +114,6 @@ dt{
 \*----------------------------*/
 
 /*-- Text input --*/
-
-.login-container{
-  height: 400px;
-  width: 400px;
-  margin: 0 auto;
-  padding-top: 30px;
-}
 
 .input {
   height: 40px;
@@ -217,13 +189,6 @@ textarea.input {
   height: 40px;
 }
 
-.login-input {
-  padding: 0px 15px;
-  background: #FFF;
-  border: 1px solid #E4E7ED;
-  height: 40px;
-  width: 400px;
-}
 /*-- checkbox & radio input --*/
 
 .input-radio, .input-checkbox {
@@ -771,7 +736,6 @@ textarea.input {
   box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
-  width: 260px;
 }
 
 .product:hover {
@@ -781,8 +745,6 @@ textarea.input {
 
 .product .product-img {
   position: relative;
-  width: 260px;
-  height: 260px;
 }
 
 .product .product-img>img {
@@ -819,7 +781,6 @@ textarea.input {
   background-color: #FFF;
   text-align: center;
   z-index: 20;
-  height: 150px;
 }
 
 .product .product-body .product-category {

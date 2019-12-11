@@ -16,8 +16,11 @@ def main_page(request):
 def test_upload(request):
     try:
         username = request.session['uname']
+        userid = request.session['uid']
         content = {
+            'login': 'yes',
             'username': username,
+            'uid': userid,
         }
         return render(request, 'test_upload/upload.html', context=content)
     except:
