@@ -137,15 +137,20 @@
 		<!-- /BREADCRUMB -->
 
 		<!-- SECTION -->
-		<div style='height:300px'>
+		<div style='height:500px'>
 			<!-- container -->
-			<div class="container" style='height:300px'>
+			<div class="container" style='height:500px'>
 				<!-- row -->
-				<div class="row" style='height:300px'>
+				<div class="row" style='height:500px'>
 					<h3 class="breadcrumb-header" style='text-align:center;'>Safe - Dealing</h3><br><br><br>
-					<h3 class="breadcrumb-header" style='text-align:center; font-size:25px;'>Administrator Account: (woori) 1002-953-286038</h3><br>
-					<h3 class="breadcrumb-header" style='text-align:center; font-size:15px;'>예금주명은 '본인의 이름 - 사고자 하는 제품명' 으로 해주시기 바랍니다. </h3>
-					<div style='margin:auto; width:10%;'><input type=button style='width:100%;;' class="primary-btn order-submit" value="Back" Onclick=""></div>
+					<div style='margin:auto; width:60%;'>
+					<h3 class="breadcrumb-header" style='font-size:20px;'>Please write your address</h3>
+					<input id='input_address' class="input" type="text" placeholder="Address">
+					</div><br><br><br><br>
+					<h3 class="breadcrumb-header" style='text-align:center; font-size:15px;'>Administrator Account: (woori) 1002-953-286038</h3>
+					<h3 class="breadcrumb-header" style='text-align:center; font-size:15px;'>예금주명은 '본인의 이름 - 사고자 하는 제품명' 으로 해주시기 바랍니다. </h3><br>
+					
+					<div style='margin:auto; width:20%;'><input type=button style='' class="primary-btn order-submit" value="Confirm" Onclick="confirm();"><input type=button style='' class="primary-btn order-submit" value="Back" Onclick="gotoBack();"></div>
 				</div>
 				<!-- /row -->
 			</div>
@@ -259,4 +264,106 @@
 		<script src="js/main.js"></script>
 
 	</body>
+	<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+	<script>
+	  var firebaseConfig = {
+	    apiKey: "AIzaSyA7jmSkNpk47WEGpAJVXuWRy2tfcf3-ieQ",
+	    authDomain: "se-proj-db.firebaseapp.com",
+	    databaseURL: "https://se-proj-db.firebaseio.com",
+	    projectId: "se-proj-db",
+	    storageBucket: "se-proj-db.appspot.com",
+	    messagingSenderId: "239952264168",
+	    appId: "1:239952264168:web:29facf8a846fb0d39e425d",
+	    measurementId: "G-2ZQXSQXSLX"
+	  };
+	  firebase.initializeApp(firebaseConfig);
+	  var database = firebase.database();
+
+	 	var cur_user = 'cur_user';
+
+		var product_code;
+		function init_safedeal(){
+			product_code = location.href.split('?:')[1];
+		}
+		init_safedeal();
+
+
+		function makeChat(){
+			var chat_title1 = 'Notice' + ':' + 'tempuser';	// user_name, product_username
+			var chat_title2 = 'tempuser' + ':' + 'Notice';
+			var vDate = new Date();
+			var MM = (vDate.getMonth() + 1).toString();
+			var dd = vDate.getDate().toString();
+			var HH = vDate.getHours().toString();
+			var mm = vDate.getMinutes().toString();
+			var time = (MM[1] ? MM : '0'+MM[0]) + (dd[1] ? dd : '0'+dd[0]) + (HH[1] ? HH : '0'+ HH[0]) + (mm[1] ? mm : '0'+ mm[0]);
+			var time_str = vDate.getHours() + ':' + vDate.getMinutes() + '  |  ' + (vDate.getMonth()+1) + '/' + vDate.getDate();
+
+			var content_num = 0;
+
+			var loop_num = 0;
+			var update_num = 0;
+			database.ref('Messenger/').once('value', function(data){
+				if(Object.keys(data.val()).includes(chat_title1) == true){
+					console.log(1);
+					database.ref('Messenger/' + chat_title1 + '/').once('value',function(sec_data){
+						content_num = Object.keys(sec_data.val()).length;
+						database.ref('Messenger/' + chat_title1 + '/' + (content_num-1) + '/').set({
+							'content': cur_user + '가 안심거래를 신청했습니다.\n신청자 주소: '  +input_address.value,
+							'time': time_str,
+							'username': 'Notice'
+						});
+					});
+				}
+				else if(Object.keys(data.val()).includes(chat_title2) == true){
+					console.log(2);
+					database.ref('Messenger/' + chat_title2 + '/').once('value',function(sec_data){
+						content_num = Object.keys(sec_data.val()).length;
+						database.ref('Messenger/' + chat_title2 + '/' + (content_num-1) + '/').set({
+							'content': cur_user + '가 안심거래를 신청했습니다.\n신청자 주소: '  +input_address.value,
+							'time': time_str,
+							'username': 'Notice'
+						});
+					});
+				}
+				else{
+					console.log(3);
+					if(loop_num == 0){
+						database.ref('Messenger'+'/'+chat_title1+'/').set({
+							'recent' : time
+						});
+						database.ref('Messenger'+'/'+chat_title1+'/'+content_num+'/').set({
+							'content': cur_user + '가 안심거래를 신청했습니다.\n신청자 주소: '  +input_address.value,
+							'time': time_str,
+							'username': 'Notice'
+						});
+						loop_num = loop_num + 1;
+					}
+				}
+
+				if( update_num == 0){
+					var updates={};
+					updates['Product/'+product_code+'/'+'status/'] = 1;
+					database.ref().update(updates);
+					update_num = update_num + 1;
+				}
+			})   
+		}
+
+		function confirm(){
+			if(!input_address.value){
+				alert('please write your address');
+			}
+			else{
+				makeChat();
+				location.href = '#';
+			}
+		}
+
+		function gotoBack(){
+			location.href = '#';
+		}
+
+	</script>
 </html>
